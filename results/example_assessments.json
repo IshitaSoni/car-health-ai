@@ -1,0 +1,57 @@
+{
+  "Poor example": {
+    "health_score": 51.6,
+    "rating": "Poor",
+    "flagged": [
+      "engine",
+      "brakes",
+      "transmission",
+      "suspension"
+    ],
+    "risks": {
+      "engine": 0.671,
+      "brakes": 0.556,
+      "battery": 0.26,
+      "transmission": 0.518,
+      "suspension": 0.398,
+      "tires": 0.286
+    },
+    "car_id": "C101277",
+    "actual_failures": [
+      "engine",
+      "suspension"
+    ]
+  },
+  "Typical example": {
+    "health_score": 86.5,
+    "rating": "Fair",
+    "flagged": [],
+    "risks": {
+      "engine": 0.042,
+      "brakes": 0.146,
+      "battery": 0.081,
+      "transmission": 0.078,
+      "suspension": 0.3,
+      "tires": 0.194
+    },
+    "car_id": "C103855",
+    "actual_failures": []
+  },
+  "Good example": {
+    "health_score": 94.8,
+    "rating": "Good",
+    "flagged": [],
+    "risks": {
+      "engine": 0.035,
+      "brakes": 0.019,
+      "battery": 0.253,
+      "transmission": 0.033,
+      "suspension": 0.008,
+      "tires": 0.054
+    },
+    "car_id": "C100632",
+    "actual_failures": [
+      "battery"
+    ]
+  }
+}
