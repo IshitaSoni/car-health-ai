@@ -1,0 +1,13 @@
+pandas
+numpy
+scipy
+scikit-learn
+joblib
+matplotlib
+seaborn
+streamlit
+plotly
+# optional: real SHAP cross-check and a live LangChain model for reports
+shap
+langchain-core
+langchain-anthropic

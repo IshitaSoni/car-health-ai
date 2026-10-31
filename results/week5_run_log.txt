@@ -1,0 +1,18 @@
+poor_8th_pct: car C101911 score 51.9 Poor flagged 6 | payload 0.42s | report source template | problems []
+typical_50th_pct: car C102464 score 86.5 Fair flagged 0 | payload 0.32s | report source template | problems []
+good_90th_pct: car C102749 score 94.8 Good flagged 0 | payload 0.32s | report source template | problems []
+engine: max efficiency gap over 150 cars = 1.11e-16
+brakes: max efficiency gap over 150 cars = 2.22e-16
+battery: max efficiency gap over 150 cars = 1.11e-16
+transmission: max efficiency gap over 150 cars = 1.11e-16
+suspension: max efficiency gap over 150 cars = 1.11e-16
+tires: max efficiency gap over 150 cars = 1.11e-16
+global importance for 150 cars x 6 components took 91s
+top driver per component:
+   component             feature  mean_abs_pp
+      engine   oil_quality_index         7.90
+      brakes  brake_pad_depth_mm         8.02
+     battery             climate        10.99
+transmission          mileage_km        10.37
+  suspension          mileage_km         9.40
+       tires tire_tread_depth_mm         9.85
