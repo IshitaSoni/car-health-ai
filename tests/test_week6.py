@@ -66,8 +66,9 @@ class TestInputs(Base):
 
 class TestAssessment(Base):
     def test_matches_week4_scores_for_sample_cars(self):
-        for cid in self.res["samples"].values():
-            out = L.assess_car(L.sample_inputs(self.df, cid), self.res)
+        res = L.load_resources(model_set="calibrated")          # the Week 3-4 models those scores came from
+        for cid in res["samples"].values():
+            out = L.assess_car(L.sample_inputs(self.df, cid), res)
             ref = self.test_scores.loc[cid]
             self.assertAlmostEqual(out["assessment"]["health_score"], ref["score"], delta=0.06, msg=cid)
             self.assertEqual(out["assessment"]["rating"], ref["rating"], cid)
@@ -171,6 +172,7 @@ def make_streamlit_stub(prefill):
     st.subheader = lambda t: calls["subheader"].append(t)
     def plot(*a, **k): calls["plotly"] += 1
     st.plotly_chart = plot
+    st.multiselect = lambda label, options, key=None, **k: st.session_state.get(key, [])
     for name in ("title", "caption", "warning", "info", "markdown", "write", "dataframe", "download_button"):
         setattr(st, name, m)
     return st, calls
@@ -194,7 +196,7 @@ class TestAppSmoke(Base):
         calls = self.run_app({})
         self.assertEqual(calls["error"], [])
         labels = [m[0] for m in calls["metric"]]
-        self.assertEqual(labels, ["Health Score", "Rating", "Flagged parts"])
+        self.assertEqual(labels[:4], ["Health Score", "Rating", "Flagged parts", "Expected repair cost (INR)"])
         self.assertGreaterEqual(calls["plotly"], 3)          # gauge, radar, 1+ driver chart
 
     def test_poor_car_draws_one_driver_chart_per_flagged_part(self):
@@ -202,7 +204,15 @@ class TestAppSmoke(Base):
         calls = self.run_app(L.sample_inputs(self.df, cid))
         flagged = L.assess_car(L.sample_inputs(self.df, cid), self.res)["assessment"]["flagged"]
         self.assertEqual(calls["plotly"], 2 + len(flagged))
-        self.assertEqual(len(calls["subheader"]), 1 + len(flagged))
+        self.assertEqual(len(calls["subheader"]), 2 + len(flagged))
+
+    def test_whatif_tab_with_fixes_selected(self):
+        cid = self.res["samples"]["Poor car (8th percentile)"]
+        pre = dict(L.sample_inputs(self.df, cid), whatif_choices=["Replace brake pads", "Replace tires"])
+        calls = self.run_app(pre)
+        flagged = L.assess_car(L.sample_inputs(self.df, cid), self.res)["assessment"]["flagged"]
+        self.assertEqual(calls["error"], [])
+        self.assertEqual(calls["plotly"], 2 + len(flagged) + 1)       # + the before/after bars
 
     def test_invalid_input_shows_error_and_stops(self):
         bad = dict(self.default, climate="arctic")

@@ -33,10 +33,19 @@ SPEC = {s[0]: s for s in INPUT_SPECS}
 KEYS = [s[0] for s in INPUT_SPECS]
 
 
+def pick_model_set(models_dir="models", model_set="auto"):
+    """'auto' uses the Week 7 monotone models when all six files exist, else the Week 3-4 models."""
+    if model_set != "auto":
+        return model_set
+    have = all(os.path.exists(f"{models_dir}/{c}_monotone.joblib") for c in COMPONENTS)
+    return "monotone" if have else "calibrated"
+
+
 def load_resources(data_path="data/car_health_ai_dataset.csv", models_dir="models",
-                   test_scores="results/test_health_scores.csv"):
+                   test_scores="results/test_health_scores.csv", model_set="auto"):
     """Dataset, six model artifacts, a 100-car training background, sample cars."""
-    for p in (data_path, test_scores, f"{models_dir}/engine_calibrated.joblib"):
+    model_set = pick_model_set(models_dir, model_set)
+    for p in (data_path, test_scores, f"{models_dir}/engine_{model_set}.joblib"):
         if not os.path.exists(p):
             raise FileNotFoundError(f"missing {p}; run the Week 3-4 scripts from the project root first")
     df = pd.read_csv(data_path)
@@ -46,8 +55,8 @@ def load_resources(data_path="data/car_health_ai_dataset.csv", models_dir="model
     samples = {"Poor car (8th percentile)": s.car_id.iloc[int(0.08 * len(s))],
                "Typical car (50th percentile)": s.car_id.iloc[int(0.50 * len(s))],
                "Good car (90th percentile)": s.car_id.iloc[int(0.90 * len(s))]}
-    return {"df": df, "artifacts": ex.load_artifacts(models_dir), "background": background,
-            "samples": samples}
+    return {"df": df, "artifacts": ex.load_artifacts(models_dir, model_set), "background": background,
+            "samples": samples, "model_set": model_set}
 
 
 def default_inputs(df):

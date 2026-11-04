@@ -1,10 +1,9 @@
 """
-car-health-ai - synthetic dataset generator
+carsentinel - synthetic dataset generator
 ==========================================
 Generates a realistic used-car inspection dataset with per-component
-failure-risk labels, based on documented degradation patterns used in
-industry inspection checklists (CarDekho 200-point checklist, standard
-PPI checklists) rather than arbitrary randomness.
+failure-risk labels, based on commonly documented degradation patterns used in
+standard pre-purchase inspection checklists rather than arbitrary randomness.
 
 Why synthetic: no public dataset pairs (age, mileage, service history,
 sensor readings) with *actual* component failure outcomes -- real fleet
@@ -20,6 +19,7 @@ Components modeled (matches standard PPI checklist categories):
     Engine, Brakes, Battery, Transmission, Suspension, Tires
 """
 
+import os
 import numpy as np
 import pandas as pd
 
@@ -147,6 +147,7 @@ def build_dataset(n=N_CARS):
 
 if __name__ == "__main__":
     dataset = build_dataset()
+    os.makedirs("data", exist_ok=True)
     out_path = "data/car_health_ai_dataset.csv"
     dataset.to_csv(out_path, index=False)
     print(f"Generated {len(dataset)} rows -> {out_path}")

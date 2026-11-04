@@ -42,8 +42,9 @@ VALUE_TEXT = {
 }
 
 
-def load_artifacts(models_dir="models"):
-    return {c: joblib.load(f"{models_dir}/{c}_calibrated.joblib") for c in COMPONENTS}
+def load_artifacts(models_dir="models", model_set="calibrated"):
+    """model_set: 'calibrated' (Week 3-4 models) or 'monotone' (Week 7, direction-constrained)."""
+    return {c: joblib.load(f"{models_dir}/{c}_{model_set}.joblib") for c in COMPONENTS}
 
 
 def encode(rows, art):
